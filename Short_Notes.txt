@@ -1,0 +1,214 @@
+Arrays in SV
+Static And Dynamic Arrays -
+Static- No Change In Size
+Dynamic -Change ,Shown As []
+Packed And Unpacked Arrays ..
+Packed Means With Two Dimensions Prasent And Unpacked Is Normal..
+Associative Arrays- Key Is Assigned in [key]..key==data(type)
+Queue Is Like Built-In Function---[$]-Rep ..And push_back(data) to push data and pop_front to get data
+--------------------------------------------------------------------------------------------------------------------------------------------
+Packed Arrays In SV 
+
+Remember vector type representation.
+it's size is already assigned before...it is a fixed array...
+ Packed Is Only Two State Logics Like bit,logic like that ...
+it can be 3D or 2D ....So that it's Size is increased ..
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Unpacked Arrays In SV
+Size repra after name declaration..
+it can any type of array(all 4)..
+we can also mix both  packed array and unpacked array to get more size...
+it also supports 2D And 3D(Packed+Unpacked)..
+the one before name varies fast and simply we can say size first to the array varies faster then other...
+stack[i][j][k]..here k is for packed if there is any hybrid 
+
+Code for both of them (Packed And Unpacked)..
+module tb;
+
+  // ░▒▓ PACKED ARRAYS ▓▒░
+  bit [15:0]         packed_scalar;        // single 16-bit packed vector
+  bit [3:0][7:0]     packed_mda;           // 4 bytes packed (32-bit)
+  bit [1:0][3:0][7:0] deep_packed;         // 2x4x8 = 64 bits packed
+
+  // ░▒▓ UNPACKED ARRAYS ▓▒░
+  bit [7:0]          unpacked_array[5];    // 5 bytes, unpacked
+  bit [3:0][7:0]     hybrid_array[2][3];   // 2x3 unpacked of 4-byte packed
+
+  initial begin
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+    // Packed scalar operations
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+    packed_scalar = 16'hface;
+    $display("packed_scalar        = 0x%0h", packed_scalar);
+    $display("packed_scalar[15:8]  = 0x%0h", packed_scalar[15:8]); // upper byte
+    $display("packed_scalar[3:0]   = 0x%0h", packed_scalar[3:0]);  // lower nibble
+
+    // Bitwise update
+    packed_scalar[7:0] = 8'hbe;
+    $display("packed_scalar (mod)  = 0x%0h", packed_scalar);
+
+
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+    // Packed MDA operations
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+    packed_mda = 32'hdead_beef;
+    $display("\npacked_mda = 0x%0h", packed_mda);
+
+    foreach (packed_mda[i])
+      $display("packed_mda[%0d] = 0x%0h", i, packed_mda[i]);  // Access byte by byte
+
+
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+    // Deep packed array
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+    deep_packed = 64'h0123_4567_89ab_cdef;
+    foreach (deep_packed[i, j])
+      $display("deep_packed[%0d][%0d] = 0x%0h", i, j, deep_packed[i][j]);
+
+
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+    // Unpacked array operations
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+    foreach (unpacked_array[i]) begin
+      unpacked_array[i] = i * 8;
+      $display("unpacked_array[%0d] = %0d", i, unpacked_array[i]);
+    end
+
+    $display("unpacked_array = %p", unpacked_array);
+
+
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+    // Hybrid array (unpacked of packed)
+    // ░░░░░░░░░░░░░░░░░░░░░░░░░░
+
+    foreach (hybrid_array[i, j]) begin
+      hybrid_array[i][j] = $random;
+      $display("hybrid_array[%0d][%0d] = 0x%0h", i, j, hybrid_array[i][j]);
+    end
+
+    // Accessing a specific byte from hybrid structure
+    $display("hybrid_array[1][2][0] = 0x%0h", hybrid_array[1][2][0]);
+
+    $display("hybrid_array = %p", hybrid_array);
+
+  end
+
+endmodule
+--------------------------------------------------------------
+
+Dynamic Arrays 
+
+Size is not assigned just left with a blank [];
+the size can be changed whenever you need with new[size] syntax...
+it also supports copying by just equalling them..
+methods---.size,.delete..
+
+Code 
+module tb;
+  int  hii [];
+  int hello [];
+  initial begin 
+    hello =new [3];
+    hello = '{1,2,3};
+    foreach(hello[i])
+      $display("hello[%0d]=%0d",i,hello[i]);
+  $display("size=%0d",hello.size());
+    hello=new[hello.size()+1](hello);
+  $display("size=%0d",hello.size());
+      foreach(hello[i])
+        $display("hello[%0d]=%0d",i,hello[i]);
+    hii=hello;
+    hii=new[hii.size()+1](hii);
+    foreach(hii[i])
+      $display("hii[%0d]=%0d",i,hii[i]);
+    
+    
+  end
+  
+endmodule
+            
+    
+---------------------------------------------------------------------------------------------------------------------------------
+
+lec1:
+
+To Prepare Verification Plan...First We need to study the Specification Sheet:-
+It Is A Sheets That Gives Idea About The signals propogation and operation of the design in waveform...such that we can derive the signals and  prepare test cases for them..
+Verification Plan 
+It Contains All the signals in our dft..it will explain about the core working of our design- it will test the main core functionality of the dut..
+It will have 
+Testcase: Signal We Are Applying as a test case.
+Description: what are the specified values we are sending and explains about the situation we are veryfing .
+Feature Covered:What are the expected outputs and what are the operations we are covering.
+
+----------------------------------------------------------------------------------------------------------------------------------------
+lec2:
+Detailed  Verification
+It explains the plan in more detailed and also covers overall functionality of the dut..
+It Will Have
+Section-In Which Section OF the design we are testing
+Testname-Whats the test name
+Summary-One word about it
+Description-Detailed Test Description(Process)
+Weight-How many works or test weightage
+Goal-What are Expected Data
+CoverGroup-What are the values we are expecting (functional verification)
+Specifications Used-Design Specifications
+
+---------------------------------------------------------------------------------------------------------------------------------------
+lec3:
+Directed Test
+Constraint Random Test
+
+Directed Test-Normal Incremental Stimulas Generation Veryfying By Applying Test Case To DUT And Analysing Them..
+CRT-It Means We Will Design Covergroup for every testcase  For Our Design And Then Check Thier Functional Coverage ...In This Case The Design Achieves Full FC..And Covergroup is the levels of the signals  we expected from the design..And then it is went to dut and then checked by scoreboard abd constraint is also checked with fv which is from the verification plan.. 
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+lec4  
+Difference Btw DT And RT
+
+Direct Test- It Generated Only Valid Value For The Signals Giving Scope For Cornered Bugs..Which Can Never Be Found By The DT..It is specified by the user end...
+Random Test: It Generated Random Values For All The Signals Covering All The Cornered Cases...So That We Will Get Full Verification..It Checks Even With The Undefined Values..
+Pure Random Test Generates So Many test Cases THat is impossible to test so we use crt..
+But Instead Of Pure Random Test We Add A Constraint to generate the values and then they sent to the dut...And how many test cases sent to the dut to verify it fully is dependent on fc...
+Our goal is to get 100% fc..to get that we add more constraint and then doing it again and again..
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+lec5
+Layered Architecture Of TB
+Signal Layer -The Signals Coming Out Of the DUT..
+Layer 2/Command Layer -To Apply Stimuly To the dut or to receive data from the dut we use this layer...it takes the command and converts into the dut signals and also it receives dut signals and converts into commands..
+Functional Layer/Layer 3:It takes multiple commands/sequence of commands and then schedules command for next layer ..its like getting commands for 100 operations and scheduling them individually.
+layer4/Scenario Layer:-It generates the commands and also responsible for checking the received data with the golden data
+layer5/test layer :Hold the simulation until we apply stimuli to verify a specific feature and also to verify the data by comparing with the golden data. It will control everything ...
+
+Individual Components 
+
+Layer2:
+Interface allows us to have communication btw the class and signls.
+ 
+Driver :so it communicates through interface and applies test cases.
+
+Monitor :It Will Collect All the responses and sends to the upper layer
+
+Layer3:
+interprocess communication(IPC) allows us share data between classes..
+Generator:It generates the stimuli and schedules which transaction to be sent to the driver.
+Scoreboard: Monitor will sent the data to the scoreboard through ipc.
+
+
+What is the structure..
+
+We Will Use Env To Make them reusable...For This We Devides them into levels as..
+We Will Have A Env Named Agent With Generator,Driver,Monitor And 
+Then We Will Have The 	Environment Which Also Includes the Scoreboard and then finally testbench_top includes everything with the dut..
+
+
+transaction will have data about the i/p and o/p signals travelling to dut or from dut or to driver etc.
+
