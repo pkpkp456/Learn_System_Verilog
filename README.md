@@ -44,7 +44,7 @@ This repo includes:
 - 🧪 **ModelSim / QuestaSim** – For simulation and waveform analysis  
 - 📝 **VS Code** – Coding with SystemVerilog extensions  
 - 📊 **GTKWave** – Viewing simulation outputs  
-- 🔧 *(Optional)* **Vivado** – For future FPGA synthesis and implementation
+- 🔧 *Simulation* **Vivado** – For future FPGA synthesis and implementation
 
 ---
 
